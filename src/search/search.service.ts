@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ResponseI } from 'src/models/interfaces/response.interface';
@@ -35,6 +35,7 @@ export class SearchService {
         // to always > from
         if ( query?.from && query?.to ) {
             const expFromDate = new Date('1950-01-01')
+            expFromDate.setHours(0,0,0);
             const fromDate = new Date(query?.from);
             const toDate = new Date(query?.to)
             toDate.setHours(24,0,0)
@@ -48,6 +49,14 @@ export class SearchService {
                     }
 
                 }
+            }
+            // console.log(fromDate.getTime(), expFromDate.getTime());
+            
+            if (fromDate.getTime() < expFromDate.getTime() ) {
+                throw new HttpException('Bad Request, Invalid date from date and it should be greater than 1950-01-01.', HttpStatus.BAD_REQUEST);
+            }
+            if (toDate.getTime() < fromDate.getTime()) {
+                throw new HttpException('Bad Request, Invalid date query to date always greater than from date.', HttpStatus.BAD_REQUEST);
             }
         }
         

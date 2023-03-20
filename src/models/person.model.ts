@@ -12,10 +12,10 @@ export class Person {
     @Prop({type: String, required: true})
     gender: string;
 
-    @Prop({type: Date, required: true})
+    @Prop({type: Date, required: true, index:true})
     dob: Date;
 
-    @Prop({ type: Date })
+    @Prop({ type: Date, index:true })
     dod: Date;
 
     @Prop({type: Object})
